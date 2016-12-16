@@ -115,7 +115,6 @@ class ServerStartCommand extends ServerCommandBase
         $processes = [];
         $force = $input->getOption('force');
         foreach ($items as $appId => $item) {
-            $appName = $item['name'];
             $appConfig = $item['config'];
             $address = $item['address'];
             $docRoot = $item['docRoot'];

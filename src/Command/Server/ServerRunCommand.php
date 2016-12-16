@@ -140,7 +140,6 @@ class ServerRunCommand extends ServerCommandBase
                     $address,
                     $otherPid === true ? 'unknown' : $otherPid
                 ));
-                $error = true;
                 return 1;
             }
 
