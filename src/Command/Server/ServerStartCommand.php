@@ -91,7 +91,7 @@ class ServerStartCommand extends ServerCommandBase
                     continue;
                 }
                 $relationships = $bufferedOutput->fetch();
-                $items[$appId]['env'][$this->config()->get('application.env_prefix') . 'RELATIONSHIPS'] = $relationships;
+                $items[$appId]['env'][$this->config()->get('service.env_prefix') . 'RELATIONSHIPS'] = $relationships;
             }
         }
 
