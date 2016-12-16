@@ -1,7 +1,7 @@
 <?php
 namespace Platformsh\Cli\Command\Server;
 
-use Platformsh\Cli\Util\Table;
+use Platformsh\Cli\Service\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +37,7 @@ class ServerListCommand extends ServerCommandBase
             }
         }
 
-        $table = new Table($input, $output);
+        $table = $this->getService('table');
         $headers = ['Address', 'PID', 'App', 'Project root', 'Log'];
         $rows = [];
         foreach ($servers as $address => $server) {

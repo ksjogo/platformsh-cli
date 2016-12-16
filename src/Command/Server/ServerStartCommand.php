@@ -21,8 +21,8 @@ class ServerStartCommand extends ServerCommandBase
           ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force starting servers')
           ->addOption('ip', null, InputOption::VALUE_REQUIRED, 'The IP address', '127.0.0.1')
           ->addOption('port', null, InputOption::VALUE_REQUIRED, 'The port of the first server')
-          ->addOption('log', null, InputOption::VALUE_REQUIRED, 'The name of a log file. Defaults to ' . self::$config->get('local.local_dir') . '/server.log')
-          ->addOption('tunnel', null, InputOption::VALUE_NONE, 'Incorporate SSH tunnels to remote ' . self::$config->get('service.name') . ' environments as relationships');
+          ->addOption('log', null, InputOption::VALUE_REQUIRED, 'The name of a log file. Defaults to ' . $this->config()->get('local.local_dir') . '/server.log')
+          ->addOption('tunnel', null, InputOption::VALUE_NONE, 'Incorporate SSH tunnels to remote ' . $this->config()->get('service.name') . ' environments as relationships');
     }
 
     public function isEnabled()
@@ -56,7 +56,7 @@ class ServerStartCommand extends ServerCommandBase
         }
 
         $multiApp = count($apps) > 1;
-        $webRoot = $projectRoot . '/' . self::$config->get('local.web_root');
+        $webRoot = $projectRoot . '/' . $this->config()->get('local.web_root');
         $items = [];
         foreach ($apps as $app) {
             $appId = $app->getId();
@@ -86,12 +86,12 @@ class ServerStartCommand extends ServerCommandBase
                 );
                 if ($result != 0) {
                     $this->stdErr->writeln(sprintf('Failed to get SSH tunnel information for the app <error>%s</error>', $appId));
-                    $this->stdErr->writeln('Run <comment>' . self::$config->get('application.executable') . ' tunnel:open</comment> to create tunnels.');
+                    $this->stdErr->writeln('Run <comment>' . $this->config()->get('application.executable') . ' tunnel:open</comment> to create tunnels.');
                     unset($items[$appId]);
                     continue;
                 }
                 $relationships = $bufferedOutput->fetch();
-                $items[$appId]['env'][self::$config->get('application.env_prefix') . 'RELATIONSHIPS'] = $relationships;
+                $items[$appId]['env'][$this->config()->get('application.env_prefix') . 'RELATIONSHIPS'] = $relationships;
             }
         }
 
@@ -99,7 +99,7 @@ class ServerStartCommand extends ServerCommandBase
             return 1;
         }
 
-        $logFile = $input->getOption('log') ?: $projectRoot . '/' . self::$config->get('local.local_dir') . '/server.log';
+        $logFile = $input->getOption('log') ?: $projectRoot . '/' . $this->config()->get('local.local_dir') . '/server.log';
         $log = $this->openLog($logFile);
         if (!$log) {
             $this->stdErr->writeln(sprintf('Failed to open log file for writing: <error>%s</error>', $logFile));
@@ -123,10 +123,10 @@ class ServerStartCommand extends ServerCommandBase
             if ($otherServer = $this->isServerRunningForApp($appId, $projectRoot)) {
                 if (!$force) {
                     $this->stdErr->writeln(sprintf(
-                      'A server is already running for the app <info>%s</info> at http://%s, PID %s',
-                      $appId,
-                      $otherServer['address'],
-                      $otherServer['pid']
+                        'A server is already running for the app <info>%s</info> at http://%s, PID %s',
+                        $appId,
+                        $otherServer['address'],
+                        $otherServer['pid']
                     ));
                     continue;
                 }
@@ -134,9 +134,10 @@ class ServerStartCommand extends ServerCommandBase
                 // If the port was not manually specified, kill the old server and
                 // take its address.
                 $this->stdErr->writeln(sprintf(
-                  'Stopping server for the app <info>%s</info> at http://%s',
-                  $appId,
-                  $otherServer['address']));
+                    'Stopping server for the app <info>%s</info> at http://%s',
+                    $appId,
+                    $otherServer['address']
+                ));
                 $this->stopServer($address, $otherServer['pid']);
                 sleep(1);
 
@@ -145,13 +146,12 @@ class ServerStartCommand extends ServerCommandBase
                 if (!$input->getOption('port') && $input->getOption('ip') === '127.0.0.1') {
                     $address = $otherServer['address'];
                 }
-            }
-            elseif ($otherPid = $this->isServerRunningForAddress($address)) {
+            } elseif ($otherPid = $this->isServerRunningForAddress($address)) {
                 if (!$force || $otherPid === true) {
                     $this->stdErr->writeln(sprintf(
-                      'A server is already running at address: http://%s, PID %s',
-                      $address,
-                      $otherPid === true ? 'unknown' : $otherPid
+                        'A server is already running at address: http://%s, PID %s',
+                        $address,
+                        $otherPid === true ? 'unknown' : $otherPid
                     ));
                     $error = true;
                     continue;
@@ -167,8 +167,7 @@ class ServerStartCommand extends ServerCommandBase
 
             try {
                 $processManager->startProcess($process, $pidFile, $log);
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->stdErr->writeln(sprintf('Failed to start server: %s', $e->getMessage()));
                 unset($processes[$address]);
                 $error = true;
@@ -199,7 +198,7 @@ class ServerStartCommand extends ServerCommandBase
 
         if (count($processes)) {
             $this->stdErr->writeln(sprintf('Logs are written to: %s', $logFile));
-            $this->stdErr->writeln('Use <comment>' . self::$config->get('application.executable') . ' server:stop</comment> to stop server(s)');
+            $this->stdErr->writeln('Use <comment>' . $this->config()->get('application.executable') . ' server:stop</comment> to stop server(s)');
         }
 
         // The terminal has received all necessary output, so we can stop the
