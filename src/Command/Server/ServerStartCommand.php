@@ -5,7 +5,7 @@ use Platformsh\Cli\Exception\RootNotFoundException;
 use Platformsh\Cli\Local\LocalApplication;
 use Platformsh\Cli\Local\Toolstack\Drupal;
 use Platformsh\Cli\Util\PortUtil;
-use Platformsh\Cli\Util\ProcessManager;
+use Platformsh\Cli\Console\ProcessManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
