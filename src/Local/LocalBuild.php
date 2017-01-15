@@ -417,8 +417,6 @@ class LocalBuild
      * @param bool   $includeActive
      * @param bool   $quiet
      *
-     * @deprecated No longer needed from 3.0.0.
-     *
      * @return int[]
      *   The numbers of deleted and kept builds.
      */
