@@ -147,12 +147,23 @@ class LocalBuild
         if ($tree === false) {
             return false;
         }
-        $tree = preg_replace('#^|\n[^\n]+?' . preg_quote($this->config->get('service.project_config_dir')) . '\n|$#', "\n", $tree);
+        $tree = preg_replace(
+            '#^|\n[^\n]+?' . preg_quote($this->config->get('service.project_config_dir')) . '\n|$#',
+            "\n",
+            $tree
+        );
         $hashes[] = sha1($tree);
 
         // Include the hashes of untracked and modified files.
         $others = $this->gitHelper->execute(
-            ['ls-files', '--modified', '--others', '--exclude-standard', '-x ' . $this->config->get('service.project_config_dir'), '.'],
+            [
+                'ls-files',
+                '--modified',
+                '--others',
+                '--exclude-standard',
+                '-x ' . $this->config->get('service.project_config_dir'),
+                '.',
+            ],
             $appRoot
         );
         if ($others === false) {
@@ -301,7 +312,10 @@ class LocalBuild
             }
         }
         if (!rename($tmpBuildDir, $buildDir)) {
-            $this->output->writeln(sprintf('Failed to move temporary build directory into <error>%s</error>', $buildDir));
+            $this->output->writeln(sprintf(
+                'Failed to move temporary build directory into <error>%s</error>',
+                $buildDir
+            ));
 
             return false;
         }
@@ -410,11 +424,11 @@ class LocalBuild
      *
      * This preserves the currently active build.
      *
-     * @param string $projectRoot
-     * @param int    $maxAge
-     * @param int    $keepMax
-     * @param bool   $includeActive
-     * @param bool   $quiet
+     * @param string   $projectRoot
+     * @param int|null $maxAge
+     * @param int      $keepMax
+     * @param bool     $includeActive
+     * @param bool     $quiet
      *
      * @return int[]
      *   The numbers of deleted and kept builds.
@@ -493,10 +507,10 @@ class LocalBuild
     /**
      * Remove old build archives.
      *
-     * @param string $projectRoot
-     * @param int    $maxAge
-     * @param int    $keepMax
-     * @param bool   $quiet
+     * @param string   $projectRoot
+     * @param int|null $maxAge
+     * @param int      $keepMax
+     * @param bool     $quiet
      *
      * @return int[]
      *   The numbers of deleted and kept builds.
@@ -515,11 +529,11 @@ class LocalBuild
     /**
      * Remove old files from a directory.
      *
-     * @param string $directory
-     * @param int    $maxAge
-     * @param int    $keepMax
-     * @param array  $blacklist
-     * @param bool   $quiet
+     * @param string   $directory
+     * @param int|null $maxAge
+     * @param int      $keepMax
+     * @param array    $blacklist
+     * @param bool     $quiet
      *
      * @return int[]
      */
@@ -547,14 +561,14 @@ class LocalBuild
                 $numKept++;
                 continue;
             }
-            if ($keepMax !== null && ($numKept >= $keepMax) || ($maxAge !== null && $now - filemtime($filename) > $maxAge)) {
+            if (($keepMax !== null && $numKept >= $keepMax)
+                || ($maxAge !== null && $now - filemtime($filename) > $maxAge)) {
                 if (!$quiet) {
                     $this->output->writeln("Deleting: " . basename($filename));
                 }
                 if ($this->fsHelper->remove($filename)) {
                     $numDeleted++;
-                }
-                elseif (!$quiet) {
+                } elseif (!$quiet) {
                     $this->output->writeln("Failed to delete: <error>" . basename($filename) . "</error>");
                 }
             } else {
@@ -564,5 +578,4 @@ class LocalBuild
 
         return [$numDeleted, $numKept];
     }
-
 }

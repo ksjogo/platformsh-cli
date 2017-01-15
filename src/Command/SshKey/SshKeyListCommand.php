@@ -49,8 +49,8 @@ class SshKeyListCommand extends CommandBase
         $this->stdErr->writeln('');
 
         $executable = $this->config()->get('application.executable');
-        $this->stdErr->writeln("Add a new SSH key with: <info>" . $executable . " ssh-key:add</info>");
-        $this->stdErr->writeln("Delete an SSH key with: <info>" . $executable . " ssh-key:delete [id]</info>");
+        $this->stdErr->writeln("Add a new SSH key with: <info>$executable ssh-key:add</info>");
+        $this->stdErr->writeln("Delete an SSH key with: <info>$executable ssh-key:delete [id]</info>");
 
         return !empty($keys) ? 0 : 1;
     }

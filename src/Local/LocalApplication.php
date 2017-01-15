@@ -46,7 +46,7 @@ class LocalApplication
      */
     protected function getPath()
     {
-        return str_replace($this->sourceDir . '/' , '', $this->appRoot);
+        return str_replace($this->sourceDir . '/', '', $this->appRoot);
     }
 
     /**
@@ -102,8 +102,7 @@ class LocalApplication
                     $parser = new Parser();
                     $config = (array) $parser->parse(file_get_contents($file));
                     $this->config = $this->normalizeConfig($config);
-                }
-                catch (ParseException $e) {
+                } catch (ParseException $e) {
                     throw new InvalidConfigException(
                         "Parse error in file '$file': \n" . $e->getMessage()
                     );

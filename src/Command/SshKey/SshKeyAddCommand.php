@@ -38,11 +38,11 @@ class SshKeyAddCommand extends CommandBase
             // Look for an existing local key.
             if (file_exists($defaultPublicKeyPath)
                 && $questionHelper->confirm(
-                    "Use existing local key <info>" . basename($defaultPublicKeyPath) . "</info>?"
+                    'Use existing local key <info>' . basename($defaultPublicKeyPath) . '</info>?'
                 )) {
                 $publicKeyPath = $defaultPublicKeyPath;
             } elseif ($shellHelper->commandExists('ssh-keygen')
-                && $questionHelper->confirm("Generate a new key?")) {
+                && $questionHelper->confirm('Generate a new key?')) {
                 // Offer to generate a key.
                 $newKeyPath = $this->getNewKeyPath();
                 $args = ['ssh-keygen', '-t', 'rsa', '-f', $newKeyPath, '-N', ''];
